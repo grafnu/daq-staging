@@ -25,4 +25,6 @@ COPY udmi/ udmi/
 # Weird workaround for problem running tcdump in a privlidged container.
 RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
 
+RUN $AG update && $AG install -y nginx
+
 ENTRYPOINT ["./start_networking"]
