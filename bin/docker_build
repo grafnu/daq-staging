@@ -50,11 +50,14 @@ for file in $docker_files; do
         unset test_set[$module]
         echo Build $file into $tag, log to $logfile...
         echo docker build -t $tag -f $file . > $logfile
+        printf -v start_time '%(%s)T' -1
         if [ -n "$inline" ]; then
             bin/retry_cmd docker build -t $tag -f $file . 2>&1 | tee -a $logfile || failed=y
         else
             bin/retry_cmd docker build -t $tag -f $file . >> $logfile 2>&1 || failed=y
         fi
+        printf -v end_time '%(%s)T' -1
+        echo Build $tag took $((end_time - start_time))s >> $logfile
         if [ -n "$failed" ]; then
             tail $logfile
             echo Build failed, see $logfile for complete log.
